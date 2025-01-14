@@ -59,6 +59,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
     'SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER': timedelta(days=1),
     'SLIDING_TOKEN_LIFETIME_LATE_USER': timedelta(days=30),
+    'USER_ID_FIELD': 'register',  # Alterar o campo identificador para 'register'
+    'USER_ID_CLAIM': 'user_id',  # Nome do claim no payload do token JWT
 }
 
 AUTH_USER_MODEL = 'app.CustomUser'

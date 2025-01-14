@@ -4,8 +4,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from django.contrib.auth.hashers import make_password
-
 from .serializers import RegisterSerializer
 
 class RegisterUserView(APIView):
