@@ -6,8 +6,8 @@ from .views import HealthAPIView, RegisterUserView, ItemAPIView
 
 urlpatterns = [
     path('', HealthAPIView.as_view()),
-    path('api/v1/signup', RegisterUserView.as_view()),
-    path('api/v1/item/', ItemAPIView.as_view())
+    path('signup', RegisterUserView.as_view()),
+    path('item/', ItemAPIView.as_view())
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
