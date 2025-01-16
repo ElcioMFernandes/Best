@@ -73,7 +73,7 @@ class Item(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=0, default=0)
     stock = models.IntegerField(null=False, blank=False, default=0)
     image = models.ImageField(
-        upload_to='uploads/',
+        upload_to='public/',
         null=True,
         blank=True,
         verbose_name="Item Image",
