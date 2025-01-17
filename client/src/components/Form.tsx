@@ -1,27 +1,36 @@
+import { useState } from "react";
 import { FormProps } from "@/interfaces/FormProps";
 
 export const Form = (props: FormProps) => {
+  const [formData, setFormData] = useState({});
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const data = new FormData(event.currentTarget);
+    const json = Object.fromEntries(data.entries());
+
+    setFormData(JSON.stringify(json));
+
+    if (typeof props.formAction === "function") {
+      props.formAction(json);
+    }
   };
 
   return (
     <>
-      <div className="flex flex-col gap-4 items-center justify-center">
-        {/*Logo no topo do formulário
-        <div className="flex flex-row gap-4">
-          <img src="/logo.png" alt="Logo" className="w-20 h-auto" />
-          <img src="/best.png" alt="Logo" className="w-32 h-auto" />
-        </div>*/}
+      <div className="flex flex-col items-center justify-center w-1/3">
         <form
           onSubmit={handleSubmit}
           method={props.formMethod}
-          className="flex flex-col gap-6 border p-4"
+          className="flex flex-col gap-6 border p-4 w-full"
         >
           {props.children}
-          <button type="submit" className="border py-2 px-4">
-            {props.formTitle}
-          </button>
+          <div className="flex w-full justify-center items-center">
+            <button type="submit" className="border py-2 w-1/3">
+              {props.formTitle}
+            </button>
+          </div>
         </form>
       </div>
     </>
