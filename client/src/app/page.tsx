@@ -1,19 +1,27 @@
 "use client";
 
-import { Form } from "@/components/Form";
 import { Frame } from "@/components/Frame";
 import { Input } from "@/components/Input";
+import { Form } from "@/components/Form";
+import { fetchAuth } from "@/services/auth";
 
 export default function Home() {
   return (
     <>
-      <Frame displayNavBar={false} displayFooter={true}>
-        <Form formTitle="Login" formAction={() => {}} formMethod="POST">
+      <Frame displayNavBar={false} displayFooter={false}>
+        <Form
+          formTitle="Entrar"
+          formAction={(data: any) => {
+            fetchAuth(data);
+          }}
+          formMethod="POST"
+        >
           <Input
             id="matricula-input"
             type="text"
-            label="Matrícula"
+            label="Estabelecimento - Matrícula"
             name="register"
+            placeholder="000-00000"
           />
           <Input
             id="password-input"
