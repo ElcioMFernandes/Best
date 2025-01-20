@@ -24,8 +24,8 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(username, password, **extra_fields)
 
 class CustomUser(AbstractUser):
-    first_name = models.CharField(max_length=30, null=False, blank=False, verbose_name="Nome")
-    last_name = models.CharField(max_length=70, null=False, blank=False, verbose_name="Sobrenome")
+    first_name = models.CharField(max_length=30, null=False, blank=False, verbose_name="Nome", help_text="Nome do usuário")
+    last_name = models.CharField(max_length=70, null=False, blank=False, verbose_name="Sobrenome", help_text="Sobrenome do usuário")
 
     email = None
     groups = None
@@ -37,12 +37,16 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self):
-        return str(self.id)
+        return f"{self.username} - {self.first_name} {self.last_name}"
+    
+    class Meta:
+        verbose_name = 'Usuário'
+        verbose_name_plural = 'Usuários'
 
 class Wallet(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.PROTECT)
-    balance = models.DecimalField(max_digits=10, decimal_places=0, default=0)
-    reserved_balance = models.DecimalField(max_digits=10, decimal_places=0, default=0)
+    user = models.OneToOneField(CustomUser, on_delete=models.PROTECT, verbose_name="Usuário", help_text="Usuário dono da carteira")
+    balance = models.DecimalField(max_digits=10, decimal_places=0, default=0, verbose_name="Saldo", help_text="Saldo disponível")
+    reserved_balance = models.DecimalField(max_digits=10, decimal_places=0, default=0, verbose_name="Saldo empenhado", help_text="Saldo empenhado em pedidos")
 
     def __str__(self):
         return str(self.user.username)
@@ -56,11 +60,15 @@ class Wallet(models.Model):
         
         super().save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = 'Carteira'
+        verbose_name_plural = 'Carteiras'
+
 class Product(models.Model):
-    name = models.CharField(max_length=20)
-    price = models.DecimalField(max_digits=10, decimal_places=0)
-    stock = models.IntegerField()
-    reserved_stock = models.IntegerField(default=0)
+    name = models.CharField(max_length=20, verbose_name="Nome", help_text="Nome do produto")
+    price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name="Preço", help_text="Preço do produto")
+    stock = models.IntegerField(verbose_name="Estoque", help_text="Quantidade em estoque")
+    reserved_stock = models.IntegerField(default=0, verbose_name="Estoque reservado", help_text="Quantidade empenhada em pedidos")
 
     def __str__(self):
         return self.name
@@ -76,6 +84,11 @@ class Product(models.Model):
             raise ValueError("Quantidade empenhada não pode ser negativa.")
     
         super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = 'Produto'
+        verbose_name_plural = 'Produtos'
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('PEN', 'Pendente'),
@@ -83,24 +96,28 @@ class Order(models.Model):
         ('CAN', 'Cancelado'),
     ]
 
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
-    status = models.CharField(max_length=3, choices=STATUS_CHOICES, default='PEN')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Produto", help_text="Produto do pedido")
+    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, verbose_name="Usuário", help_text="Usuário que fez o pedido")
+    status = models.CharField(max_length=3, choices=STATUS_CHOICES, default='PEN', verbose_name="Status", help_text="Status do pedido")
 
     def __str__(self):
         return f"#{self.id}({self.status}): {self.product.name} - {self.user.username}"
 
+    class Meta:
+        verbose_name = 'Pedido'
+        verbose_name_plural = 'Pedidos'
+
 class Transaction(models.Model):
     TYPE_CHOICES = [
         ('ADD', 'Adição de fundos'),
-        ('DEB', 'Débito')
+        ('DEB', 'Débito de fundos')
     ]
 
-    order = models.ForeignKey(Order, on_delete=models.PROTECT, null=True, blank=True)
-    wallet = models.ForeignKey(Wallet, on_delete=models.PROTECT)
-    value = models.DecimalField(max_digits=10, decimal_places=0, null=True, blank=True)
-    type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='ADD')
-    detail = models.CharField(max_length=100)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Pedido", help_text="Pedido relacionado à transação")
+    wallet = models.ForeignKey(Wallet, on_delete=models.PROTECT, verbose_name="Carteira", help_text="Carteira relacionada à transação")
+    value = models.DecimalField(max_digits=10, decimal_places=0, null=True, blank=True, verbose_name="Valor", help_text="Valor da transação")
+    type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='ADD', verbose_name="Tipo", help_text="Tipo da transação")
+    detail = models.CharField(max_length=100, verbose_name="Detalhes", help_text="Detalhes da transação")
 
     def __str__(self):
         return f"#{self.id}: {self.wallet} - {self.detail}"
@@ -111,20 +128,36 @@ class Transaction(models.Model):
 
         super().save(*args, **kwargs)        
 
+    class Meta:
+        verbose_name = 'Transação'
+        verbose_name_plural = 'Transações'
+
+# Define o valor da transação com base no preço do produto
 @receiver(pre_save, sender=Transaction)
 def set_value(sender, instance, **kwargs):
     if instance.order and instance.value is None:
         instance.value = instance.order.product.price
 
+# Atualiza o saldo empenhado e o estoque reservado após uma mudança de status
 @receiver(post_save, sender=Order)
 def handle_order_status(sender, instance, created, **kwargs):
     wallet = Wallet.objects.get(user=instance.user)
     product = instance.product
     
     if created and instance.status == 'PEN':
+        # Verifica se há saldo suficiente antes de criar o pedido
+        if wallet.balance < product.price:
+            raise ValueError("Saldo insuficiente para criar o pedido.")
+        # Cria uma transação de débito para o pedido
+        Transaction.objects.create(
+            order=instance,
+            wallet=wallet,
+            value=product.price,
+            type='DEB',
+            detail=f'Pedido criado: {product.name}'
+        )
         # Atualiza o saldo empenhado e o estoque reservado
         wallet.reserved_balance += product.price
-        wallet.balance -= product.price
         product.reserved_stock += 1
         product.stock -= 1
         wallet.save()
@@ -139,23 +172,31 @@ def handle_order_status(sender, instance, created, **kwargs):
             detail=f'Cancelamento de pedido: {product.name}'
         )
         wallet.reserved_balance -= product.price
-        wallet.balance += product.price
         product.reserved_stock -= 1
         product.stock += 1
         wallet.save()
         product.save()
-    elif instance.status == 'FIN':
+    elif not created and instance.status == 'FIN':
         # Atualiza o saldo empenhado e o estoque reservado
         wallet.reserved_balance -= product.price
         product.reserved_stock -= 1
         wallet.save()
         product.save()
 
+# Atualiza o saldo da carteira após uma transação
 @receiver(post_save, sender=Transaction)
 def update_wallet(sender, instance, created, **kwargs):
     if created:
         if instance.type == 'ADD':
             instance.wallet.balance += instance.value
         elif instance.type == 'DEB':
+            if instance.wallet.balance < instance.value:
+                raise ValueError("Saldo insuficiente para realizar a transação.")
             instance.wallet.balance -= instance.value
         instance.wallet.save()
+
+# Cria uma carteira para cada novo usuário
+@receiver(post_save, sender=CustomUser)
+def create_wallet_for_new_user(sender, instance, created, **kwargs):
+    if created:
+        Wallet.objects.create(user=instance)

@@ -23,18 +23,58 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 
 class WalletAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('user', 'balance', 'reserved_balance')
+    search_fields = ('user__username',)
+    list_filter = ('balance', 'reserved_balance')
+    readonly_fields = ('user', 'balance', 'reserved_balance')
 
-class ProductAdmin(admin.ModelAdmin):
-    pass
-
-class OrderAdmin(admin.ModelAdmin):
-    pass
-
-class TransactionAdmin(admin.ModelAdmin):
-    pass
+    def has_add_permission(self, request):
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 admin.site.register(Wallet, WalletAdmin)
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'stock', 'reserved_stock')
+    search_fields = ('name',)
+    list_filter = ('price', 'stock')
+    readonly_fields = ('reserved_stock',)
+
 admin.site.register(Product, ProductAdmin)
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product', 'user', 'status')
+    search_fields = ('product__name', 'user__username')
+    list_filter = ('status',)
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # This is the case when the object is already created
+            if obj.status != 'PEN':
+                return ['product', 'user', 'status']
+            else:
+                return ['product', 'user']
+        else:
+            return ['status']
+
+    def save_model(self, request, obj, form, change):
+        if not change:  # This is the case when the object is being created
+            obj.status = 'PEN'
+        super().save_model(request, obj, form, change)
+
 admin.site.register(Order, OrderAdmin)
+
+
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'wallet', 'value', 'type', 'detail')
+    search_fields = ('wallet__user__username', 'detail')
+    list_filter = ('type', 'value')
+
+    def get_readonly_fields(self, request, obj = ...):
+        if obj:
+            return ['wallet', 'order', 'value', 'type', 'detail']
+        else:
+            return []
+
 admin.site.register(Transaction, TransactionAdmin)
