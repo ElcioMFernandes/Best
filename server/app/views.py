@@ -2,6 +2,7 @@ from rest_framework import generics, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import CustomUser, Wallet, Product, Order, Transaction
 from .serializers import CustomUserSerializer, WalletSerializer, ProductSerializer, OrderSerializer, TransactionSerializer
+from .permissions import IsStaffOrReadOnly
 
 class CustomUserListCreateAPIView(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
@@ -13,7 +14,7 @@ class CustomUserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIVi
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
 
 class WalletListCreateAPIView(generics.ListCreateAPIView):
     queryset = Wallet.objects.all()
@@ -25,7 +26,7 @@ class WalletRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -37,7 +38,7 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
 
 class OrderListCreateAPIView(generics.ListCreateAPIView):
     queryset = Order.objects.all()
@@ -49,7 +50,7 @@ class OrderRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
 
 class TransactionListCreateAPIView(generics.ListCreateAPIView):
     queryset = Transaction.objects.all()
@@ -61,4 +62,4 @@ class TransactionRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIV
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
