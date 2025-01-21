@@ -69,6 +69,8 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name="Preço", help_text="Preço do produto")
     stock = models.IntegerField(verbose_name="Estoque", help_text="Quantidade em estoque")
     reserved_stock = models.IntegerField(default=0, verbose_name="Estoque reservado", help_text="Quantidade empenhada em pedidos")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em", help_text="Data de criação do produto")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Atualizado em", help_text="Data de atualização do produto")
 
     def __str__(self):
         return self.name
@@ -99,6 +101,8 @@ class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Produto", help_text="Produto do pedido")
     user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, verbose_name="Usuário", help_text="Usuário que fez o pedido")
     status = models.CharField(max_length=3, choices=STATUS_CHOICES, default='PEN', verbose_name="Status", help_text="Status do pedido")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em", help_text="Data de criação do pedido")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Atualizado em", help_text="Data de atualização do pedido")
 
     def __str__(self):
         return f"#{self.id}({self.status}): {self.product.name} - {self.user.username}"
@@ -118,6 +122,7 @@ class Transaction(models.Model):
     value = models.DecimalField(max_digits=10, decimal_places=0, null=True, blank=True, verbose_name="Valor", help_text="Valor da transação")
     type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='ADD', verbose_name="Tipo", help_text="Tipo da transação")
     detail = models.CharField(max_length=100, verbose_name="Detalhes", help_text="Detalhes da transação")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em", help_text="Data de criação da transação")
 
     def __str__(self):
         return f"#{self.id}: {self.wallet} - {self.detail}"
