@@ -40,21 +40,21 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'stock', 'reserved_stock')
     search_fields = ('name',)
     list_filter = ('price', 'stock')
-    readonly_fields = ('reserved_stock',)
+    readonly_fields = ('reserved_stock', 'created_at', 'updated_at')
 
 admin.site.register(Product, ProductAdmin)
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'user', 'status')
-    search_fields = ('product__name', 'user__username')
+    list_display = ('id', 'product', 'user', 'status', 'created_at', 'updated_at')
+    search_fields = ('product__name', 'user__username', 'created_at')
     list_filter = ('status',)
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # This is the case when the object is already created
             if obj.status != 'PEN':
-                return ['product', 'user', 'status']
+                return ['product', 'user', 'status', 'created_at', 'updated_at']
             else:
-                return ['product', 'user']
+                return ['product', 'user', 'created_at', 'updated_at']
         else:
             return ['status']
 
@@ -65,15 +65,14 @@ class OrderAdmin(admin.ModelAdmin):
 
 admin.site.register(Order, OrderAdmin)
 
-
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'wallet', 'value', 'type', 'detail')
+    list_display = ('id', 'wallet', 'value', 'type', 'detail', 'created_at')
     search_fields = ('wallet__user__username', 'detail')
     list_filter = ('type', 'value')
 
     def get_readonly_fields(self, request, obj = ...):
         if obj:
-            return ['wallet', 'order', 'value', 'type', 'detail']
+            return ['wallet', 'order', 'value', 'type', 'detail', 'created_at']
         else:
             return []
 
