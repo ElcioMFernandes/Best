@@ -11,6 +11,7 @@ interface Product {
   name: string;
   price: string;
   stock: number;
+  image: string;
 }
 
 const Products = () => {
@@ -35,6 +36,7 @@ const Products = () => {
           name: product.name,
           price: product.price,
           stock: product.stock,
+          image: product.image,
         }));
         setProducts(filteredProducts);
       } catch (error) {
@@ -61,6 +63,7 @@ const Products = () => {
                 title={product.name}
                 subtitle={product.price}
                 description={`Em estoque: ${product.stock}`}
+                image={product.image}
               ></Card>
             </Link>
           </li>
