@@ -22,11 +22,24 @@ class WalletListCreateAPIView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        return Wallet.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 class WalletRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
+
+    def get_object(self):
+        obj = super().get_object()
+        if obj.user != self.request.user:
+            raise permissions.PermissionDenied("You do not have permission to access this wallet.")
+        return obj
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -46,11 +59,24 @@ class OrderListCreateAPIView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        return Order.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 class OrderRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
+
+    def get_object(self):
+        obj = super().get_object()
+        if obj.user != self.request.user:
+            raise permissions.PermissionDenied("You do not have permission to access this order.")
+        return obj
 
 class TransactionListCreateAPIView(generics.ListCreateAPIView):
     queryset = Transaction.objects.all()
@@ -58,8 +84,22 @@ class TransactionListCreateAPIView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        return Transaction.objects.filter(wallet__user=user)
+
+    def perform_create(self, serializer):
+        wallet = Wallet.objects.get(user=self.request.user)
+        serializer.save(wallet=wallet)
+
 class TransactionRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
+
+    def get_object(self):
+        obj = super().get_object()
+        if obj.wallet.user != self.request.user:
+            raise permissions.PermissionDenied("You do not have permission to access this transaction.")
+        return obj
