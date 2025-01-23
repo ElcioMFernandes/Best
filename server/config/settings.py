@@ -8,7 +8,7 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-NEXT_PUBLIC_DIR = os.path.join(BASE_DIR, '..', 'client')
+NEXT_PUBLIC_DIR = os.path.join(BASE_DIR, '..', 'client', 'public')
 
 MEDIA_ROOT = NEXT_PUBLIC_DIR
 

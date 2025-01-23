@@ -71,7 +71,8 @@ class Product(models.Model):
     reserved_stock = models.IntegerField(default=0, verbose_name="Estoque reservado", help_text="Quantidade empenhada em pedidos")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em", help_text="Data de criação do produto")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Atualizado em", help_text="Data de atualização do produto")
-
+    image = models.ImageField(upload_to='products/', null=True, blank=True, verbose_name="Imagem do Produto")
+    
     def __str__(self):
         return self.name
     

@@ -29,9 +29,17 @@ class WalletSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'balance', 'reserved_balance']
 
 class ProductSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'stock', 'reserved_stock']
+        fields = ['id', 'name', 'price', 'stock', 'image', 'reserved_stock']
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        return None
 
 class OrderSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
