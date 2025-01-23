@@ -6,13 +6,13 @@ import { Form } from "@/components/Form";
 import { fetchAuth } from "@/services/auth";
 import { useRouter } from "next/navigation";
 
-export default function Home() {
+export default function Login() {
   const router = useRouter();
 
   const handleLogin = async (data: any) => {
     const success = await fetchAuth(data);
     if (success) {
-      router.push("/home");
+      router.push("/products");
     } else {
       alert("Erro ao autenticar. Verifique suas credenciais.");
     }
