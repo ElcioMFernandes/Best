@@ -23,10 +23,10 @@ export default function Home() {
       <Frame displayNavBar={false} displayFooter={false}>
         <Form formTitle="Entrar" formAction={handleLogin} formMethod="POST">
           <Input
-            id="matricula-input"
-            type="text"
+            id="username-input"
+            type="username"
             label="Estabelecimento - Matrícula"
-            name="register"
+            name="username"
             placeholder="000-00000"
           />
           <Input
