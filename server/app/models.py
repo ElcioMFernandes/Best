@@ -137,6 +137,17 @@ class Transaction(models.Model):
         verbose_name = 'Transação'
         verbose_name_plural = 'Transações'
 
+class RequestLog(models.Model):
+    method = models.CharField(max_length=10)
+    endpoint = models.CharField(max_length=255)
+    ip_address = models.GenericIPAddressField()
+    headers = models.TextField()
+    body = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.method} {self.endpoint} at {self.timestamp}"
+
 # Define o valor da transação com base no preço do produto
 @receiver(pre_save, sender=Transaction)
 def set_value(sender, instance, **kwargs):

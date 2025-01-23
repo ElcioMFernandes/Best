@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Wallet, Product, Order, Transaction
+from .models import CustomUser, Wallet, Product, Order, Transaction, RequestLog
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
@@ -77,3 +77,11 @@ class TransactionAdmin(admin.ModelAdmin):
             return []
 
 admin.site.register(Transaction, TransactionAdmin)
+
+class RequestLogAdmin(admin.ModelAdmin):
+    list_display = ('method', 'endpoint', 'ip_address', 'timestamp')
+    search_fields = ('method', 'endpoint', 'ip_address')
+    list_filter = ('method', 'timestamp')
+    readonly_fields = ('method', 'endpoint', 'ip_address', 'headers', 'body', 'timestamp')
+
+admin.site.register(RequestLog, RequestLogAdmin)
