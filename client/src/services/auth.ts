@@ -1,14 +1,14 @@
 import axios from "axios";
 
 export const fetchAuth = async (data: any) => {
+  console.log(data);
   try {
     const response = await axios.post(
-      "http://127.0.0.1:8000/api/v1/auth/token/",
+      "http://192.168.20.51:8000/api/v1/auth/token/",
       data
     );
 
-    console.log(response.data);
-
+    console.log(response);
     if (response.data.detail) {
       return false;
     }
@@ -17,7 +17,6 @@ export const fetchAuth = async (data: any) => {
     sessionStorage.setItem("refreshToken", refresh);
     return true;
   } catch (error) {
-    console.log(`Erro ao autenticar: ${error}`);
     return false;
   }
 };
