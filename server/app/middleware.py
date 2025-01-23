@@ -1,5 +1,6 @@
 import json
 from .models import RequestLog
+from django.http import RawPostDataException
 
 class RequestLoggingMiddleware:
     def __init__(self, get_response):
@@ -11,9 +12,12 @@ class RequestLoggingMiddleware:
         return response
 
     def log_request(self, request):
-        if request.method == 'POST':
-            body = request.body.decode('utf-8')
-        else:
+        try:
+            if request.method == 'POST':
+                body = request.body.decode('utf-8')
+            else:
+                body = ''
+        except RawPostDataException:
             body = ''
 
         RequestLog.objects.create(
