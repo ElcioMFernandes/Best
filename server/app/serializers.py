@@ -36,9 +36,8 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'price', 'stock', 'image', 'reserved_stock']
 
     def get_image(self, obj):
-        request = self.context.get('request')
         if obj.image:
-            return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
         return None
 
 class OrderSerializer(serializers.ModelSerializer):
