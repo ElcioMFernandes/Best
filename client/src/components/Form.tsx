@@ -19,7 +19,7 @@ export const Form = (props: FormProps) => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center w-1/3">
+      <div className="flex flex-col items-center justify-center lg:w-1/3 md:w-2/3 sm:w-3/4">
         <form
           onSubmit={handleSubmit}
           method={props.formMethod}
@@ -27,7 +27,7 @@ export const Form = (props: FormProps) => {
         >
           {props.children}
           <div className="flex w-full justify-center items-center">
-            <button type="submit" className="border py-2 w-1/3">
+            <button type="submit" className="border py-2 w-2/3">
               {props.formTitle}
             </button>
           </div>

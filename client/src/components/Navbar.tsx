@@ -7,12 +7,17 @@ export const Navbar = (props: NavbarProps) => {
 
   return (
     <>
-      <nav className="flex border py-2 w-full items-center justify-between select-none">
-        <h1 className="flex-1 pl-4 font-semibold">{props.title}</h1>
+      <nav className="flex py-2 w-full items-center justify-between select-none shadow-md">
+        <div className="flex-1 flex items-center">
+          <img src="logo.svg" className="pl-2 w-12 h-12" />
+        </div>
         <ul className="flex flex-row gap-4 justify-center flex-1">
           {props.items.map((item, index) => (
-            <li key={index}>
-              <Link href={item.path}>{item.title}</Link>
+            <li key={index} className="flex items-center">
+              <Link href={item.path} className="flex items-center gap-2">
+                {item.icon && <span>{item.icon}</span>}
+                {item.title}
+              </Link>
             </li>
           ))}
         </ul>

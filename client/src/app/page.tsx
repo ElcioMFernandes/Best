@@ -1,10 +1,10 @@
 "use client";
 
+import { fetchAuth } from "@/services/auth";
+import { useRouter } from "next/navigation";
 import { Frame } from "@/components/Frame";
 import { Input } from "@/components/Input";
 import { Form } from "@/components/Form";
-import { fetchAuth } from "@/services/auth";
-import { useRouter } from "next/navigation";
 
 export default function Login() {
   const router = useRouter();
@@ -25,9 +25,8 @@ export default function Login() {
           <Input
             id="username-input"
             type="username"
-            label="Estabelecimento - Matrícula"
+            label="Matrícula"
             name="username"
-            placeholder="000-00000"
           />
           <Input
             id="password-input"

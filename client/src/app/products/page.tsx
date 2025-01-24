@@ -55,19 +55,20 @@ const Products = () => {
 
   return (
     <Frame displayNavBar={true} displayFooter={true}>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product, index) => (
-          <li key={index}>
-            <Link href={`/products/${product.id}`}>
-              <Card
-                title={product.name}
-                subtitle={product.price}
-                description={`Em estoque: ${product.stock}`}
-                image={product.image}
-              ></Card>
-            </Link>
-          </li>
-        ))}
+      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-10">
+        {products
+          .filter((product) => product.stock > 0)
+          .map((product, index) => (
+            <li key={index}>
+              <Link href={`/products/${product.id}`}>
+                <Card
+                  title={product.name}
+                  subtitle={product.price}
+                  image={product.image}
+                ></Card>
+              </Link>
+            </li>
+          ))}
       </ul>
     </Frame>
   );
