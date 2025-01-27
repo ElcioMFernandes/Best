@@ -1,15 +1,23 @@
 import { FrameProps } from "@/interfaces/FrameProps";
 import { Footer } from "./Footer";
 import { Navbar } from "./Navbar";
+import { Loader } from "./Loader";
+import useAuth from "@/hooks/useAuth";
 
 export const Frame = (props: FrameProps) => {
+  const isLoading = useAuth();
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   const headers = [
     {
       title: "Início",
       path: "/products",
       icon: (
         <svg
-          className="w-6 h-6 text-gray-800 dark:text-white"
+          className="w-6 h-6 text-neutral-700 dark:text-neutral-100"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -30,7 +38,7 @@ export const Frame = (props: FrameProps) => {
       path: "/orders",
       icon: (
         <svg
-          className="w-6 h-6 text-gray-800 dark:text-white"
+          className="w-6 h-6 text-neutral-700 dark:text-neutral-100"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -39,9 +47,9 @@ export const Frame = (props: FrameProps) => {
           viewBox="0 0 24 24"
         >
           <path
-            fill-rule="evenodd"
+            fillRule="evenodd"
             d="M5.617 2.076a1 1 0 0 1 1.09.217L8 3.586l1.293-1.293a1 1 0 0 1 1.414 0L12 3.586l1.293-1.293a1 1 0 0 1 1.414 0L16 3.586l1.293-1.293A1 1 0 0 1 19 3v18a1 1 0 0 1-1.707.707L16 20.414l-1.293 1.293a1 1 0 0 1-1.414 0L12 20.414l-1.293 1.293a1 1 0 0 1-1.414 0L8 20.414l-1.293 1.293A1 1 0 0 1 5 21V3a1 1 0 0 1 .617-.924ZM9 7a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H9Zm0 4a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Zm0 4a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Z"
-            clip-rule="evenodd"
+            clipRule="evenodd"
           />
         </svg>
       ),
@@ -51,7 +59,7 @@ export const Frame = (props: FrameProps) => {
       path: "/transactions",
       icon: (
         <svg
-          className="w-6 h-6 text-gray-800 dark:text-white"
+          className="w-6 h-6 text-neutral-700 dark:text-neutral-100"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -60,14 +68,14 @@ export const Frame = (props: FrameProps) => {
           viewBox="0 0 24 24"
         >
           <path
-            fill-rule="evenodd"
+            fillRule="evenodd"
             d="M12 14a3 3 0 0 1 3-3h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a3 3 0 0 1-3-3Zm3-1a1 1 0 1 0 0 2h4v-2h-4Z"
-            clip-rule="evenodd"
+            clipRule="evenodd"
           />
           <path
-            fill-rule="evenodd"
+            fillRule="evenodd"
             d="M12.293 3.293a1 1 0 0 1 1.414 0L16.414 6h-2.828l-1.293-1.293a1 1 0 0 1 0-1.414ZM12.414 6 9.707 3.293a1 1 0 0 0-1.414 0L5.586 6h6.828ZM4.586 7l-.056.055A2 2 0 0 0 3 9v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2h-4a5 5 0 0 1 0-10h4a2 2 0 0 0-1.53-1.945L17.414 7H4.586Z"
-            clip-rule="evenodd"
+            clipRule="evenodd"
           />
         </svg>
       ),

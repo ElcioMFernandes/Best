@@ -1,9 +1,5 @@
+import { ExpandableCardProps } from "@/interfaces/ExpandableCardProps";
 import { useState } from "react";
-
-interface ExpandableCardProps {
-  resumedContent: React.ReactNode;
-  expandedContent: React.ReactNode;
-}
 
 const ExpandableCard = ({
   resumedContent,
