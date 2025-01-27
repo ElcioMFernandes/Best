@@ -21,6 +21,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 CORS_ALLOWED_ORIGINS = [
+    "http://laptb601:3000",
+    "http://192.168.21.85:3000",
     "http://192.168.20.51:3000",
     "http://10.0.104.96:3000",
     "http://10.1.0.37:3000",
@@ -29,6 +31,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    "http://laptb601:3000",
+    "http://192.168.21.85:3000",
     "http://192.168.20.51:3000",
     "http://10.0.104.96:3000",
     "http://10.1.0.37:3000",
