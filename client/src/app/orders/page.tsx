@@ -1,129 +1,64 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import ExpandableCard from "@/components/ExpandableCard";
 import { Frame } from "@/components/Frame";
 import { List } from "@/components/List";
+import { Loader } from "@/components/Loader";
 import useAuth from "@/hooks/useAuth";
+import request from "@/services/fetch";
+import { Order } from "@/types/order";
 
 const Orders = () => {
   const isLoading = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (isLoading) {
-    return <p>Loading...</p>;
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response: Order[] = await request({
+          endpoint: "orders",
+          method: "GET",
+        });
+        setOrders(response);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  if (isLoading || loading) {
+    return <Loader />;
   }
 
   return (
-    <Frame displayNavBar={true} displayFooter={true}>
+    <Frame displayNavBar={true} displayFooter={false}>
       <List title="Pedidos">
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#111</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Pendente</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 1</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#112</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Cancelado</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 2</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#113</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Pendente</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 3</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#121</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Cancelado</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 4</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#122</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Finalizado</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 5</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#123</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Finalizado</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 6</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#131</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Finalizado</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 7</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#132</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Cancelado</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 8</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#133</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Pendente</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 9</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#211</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Finalizado</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 10</p>}
-        />
-        <ExpandableCard
-          resumedContent={
-            <ul className="flex gap-4">
-              <li className="border-r pr-4">#212</li>
-              <li className="border-r pr-4">01/01/2025</li>
-              <li className="pr-4">Finalizado</li>
-            </ul>
-          }
-          expandedContent={<p>Este é o conteúdo expandido 11</p>}
-        />
+        {orders.length ? (
+          orders.map((order) => (
+            <ExpandableCard
+              resumedContent={`#${order.id} - ${order.product.name}: ${order.status}`}
+              expandedContent={
+                <div className="flex flex-row">
+                  <img
+                    src={order.product.image}
+                    alt={order.product.image}
+                    className="w-16 h-16"
+                  />
+                </div>
+              }
+              key={order.id}
+              {...order}
+            />
+          ))
+        ) : (
+          <div>Não há registros</div>
+        )}
       </List>
     </Frame>
   );

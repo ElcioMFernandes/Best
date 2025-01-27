@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import { Frame } from "@/components/Frame";
 import useAuth from "@/hooks/useAuth";
 import request from "@/services/fetch";
+import { Loader } from "@/components/Loader";
+import { NotFound } from "@/components/NotFound";
 
 interface Product {
   image: string;
@@ -23,7 +25,7 @@ const ProductPage = () => {
     const fetchProduct = async () => {
       try {
         const response = await request({
-          endpoint: `http://192.168.20.51:8000/api/v1/products/${id}`,
+          endpoint: `products/${id}`,
           method: "GET",
         });
         setProduct(response);
@@ -40,28 +42,43 @@ const ProductPage = () => {
   }, [id]);
 
   if (isAuthLoading || isLoading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (!product) {
-    return <p>Product not found</p>;
+    return <NotFound />;
   }
 
   return (
-    <Frame displayNavBar={true} displayFooter={true}>
-      <div className="flex p-6 gap-4 select-none w-4/6 shadow-2xl rounded-md dark:bg-stone-700">
+    <Frame displayNavBar={true} displayFooter={false}>
+      <div className="flex p-6 gap-4 select-none lg:w-4/6 md:3/4 sm:1/1 shadow-2xl rounded-lg dark:border dark:border-stone-600 dark:border-opacity-30">
         <img src={product.image} alt={product.name} className="h-full w-1/3" />
         <div className="flex flex-col gap-4 p-4 w-2/3">
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center justify-center">
             <h1 className="text-4xl">{product.name}</h1>
-            <p className="text-2xl">${product.price}</p>
+            <p className="text-2xl flex flex-row gap-2">
+              {
+                <svg
+                  className="w-6 h-6 text-gray-800 dark:text-white"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                </svg>
+              }
+              {product.price}
+            </p>
           </div>
           <div>
             <p>bla bla bla bla</p>
             <p className="opacity-80">Estoque: {product.stock}</p>
           </div>
           <button
-            className="py-2 bg-orange-500 hover:bg-orange-600 rounded-md"
+            className="rounded-md bg-red-500 hover:bg-red-600 w-full py-2 text-white"
             onClick={() => alert("Comprado!")}
           >
             Comprar

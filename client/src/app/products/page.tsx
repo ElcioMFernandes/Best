@@ -1,18 +1,21 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { Frame } from "@/components/Frame";
-import useAuth from "@/hooks/useAuth";
-import Card from "@/components/Card";
 import Link from "next/link";
 
-interface Product {
-  id: number;
-  name: string;
-  price: string;
-  stock: number;
-  image: string;
-}
+// hooks
+import useAuth from "@/hooks/useAuth";
+
+// components
+import { Frame } from "@/components/Frame";
+import Card from "@/components/Card";
+
+// types
+import { Product } from "@/types/product";
+import { Loader } from "@/components/Loader";
+
+// services
+import request from "@/services/fetch";
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -22,16 +25,11 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const accessToken = sessionStorage.getItem("accessToken");
-        const response = await axios.get(
-          "http://192.168.20.51:8000/api/v1/products",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        const filteredProducts = response.data.map((product: any) => ({
+        const response = await request({
+          endpoint: "products",
+          method: "GET",
+        });
+        const filteredProducts = response.map((product: any) => ({
           id: product.id,
           name: product.name,
           price: product.price,
@@ -39,10 +37,9 @@ const Products = () => {
           image: product.image,
         }));
         setProducts(filteredProducts);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -50,11 +47,11 @@ const Products = () => {
   }, []);
 
   if (isAuthLoading || isLoading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   return (
-    <Frame displayNavBar={true} displayFooter={true}>
+    <Frame displayNavBar={true} displayFooter={false}>
       <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-10">
         {products
           .filter((product) => product.stock > 0)
@@ -65,7 +62,7 @@ const Products = () => {
                   title={product.name}
                   subtitle={product.price}
                   image={product.image}
-                ></Card>
+                />
               </Link>
             </li>
           ))}
