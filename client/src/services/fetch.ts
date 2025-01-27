@@ -1,18 +1,13 @@
+import { RequestProps } from "@/interfaces/RequestProps";
 import axios, { AxiosRequestConfig } from "axios";
 import refreshAccessToken from "./refresh";
-
-interface RequestProps {
-  endpoint: string;
-  method: "GET" | "POST" | "PATCH" | "DELETE";
-  body?: any;
-  retry?: boolean; // Flag to indicate if this is a retry attempt
-}
+import { client } from "@/config";
 
 const request = async (props: RequestProps) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
     const config: AxiosRequestConfig = {
-      url: props.endpoint,
+      url: `${client.api.url}${props.endpoint}`,
       method: props.method,
       headers: {
         Authorization: `Bearer ${accessToken}`,

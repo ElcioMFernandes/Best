@@ -1,3 +1,4 @@
+import { client } from "@/config";
 import axios from "axios";
 
 const refreshAccessToken = async () => {
@@ -7,12 +8,9 @@ const refreshAccessToken = async () => {
       throw new Error("No refresh token found");
     }
 
-    const response = await axios.post(
-      "http://192.168.20.51:8000/api/v1/auth/token/refresh/",
-      {
-        refresh: refreshToken,
-      }
-    );
+    const response = await axios.post(`${client.api.url}auth/token/refresh/`, {
+      refresh: refreshToken,
+    });
 
     const { access } = response.data;
     sessionStorage.setItem("accessToken", access);

@@ -1,12 +1,10 @@
+import { client } from "@/config";
 import axios from "axios";
 
 export const fetchAuth = async (data: any) => {
-  console.log(data);
   try {
-    const response = await axios.post(
-      "http://192.168.20.51:8000/api/v1/auth/token/",
-      data
-    );
+    console.log(`${client.api.url}auth/token/`);
+    const response = await axios.post(`${client.api.url}auth/token/`, data);
 
     console.log(response);
     if (response.data.detail) {
