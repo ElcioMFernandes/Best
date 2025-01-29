@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Frame } from "@/components/Frame";
 import useAuth from "@/hooks/useAuth";
 import request from "@/services/fetch";
@@ -20,6 +20,7 @@ const ProductPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isAuthLoading = useAuth();
   const { id } = useParams();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -48,6 +49,21 @@ const ProductPage = () => {
   if (!product) {
     return <NotFound />;
   }
+
+  const handleSubmit = async () => {
+    try {
+      await request({
+        endpoint: `orders/`,
+        method: "POST",
+        body: {
+          product_id: id,
+        },
+      });
+      router.push("/products/");
+    } catch (error) {
+      console.error("Error buying product:", error);
+    }
+  };
 
   return (
     <Frame displayNavBar={true} displayFooter={false}>
@@ -79,7 +95,7 @@ const ProductPage = () => {
           </div>
           <button
             className="rounded-md bg-red-500 hover:bg-red-600 w-full py-2 text-white"
-            onClick={() => alert("Comprado!")}
+            onClick={handleSubmit}
           >
             Comprar
           </button>

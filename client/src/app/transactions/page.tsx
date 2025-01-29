@@ -1,13 +1,26 @@
 "use client";
 
+// Date-fns
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+
+// React
 import { useEffect, useState } from "react";
+
+// Components
 import ExpandableCard from "@/components/ExpandableCard";
+import { Loader } from "@/components/Loader";
 import { Frame } from "@/components/Frame";
 import { List } from "@/components/List";
-import { Loader } from "@/components/Loader";
+
+// Hooks
 import useAuth from "@/hooks/useAuth";
-import request from "@/services/fetch";
+
+// Types
 import { Transaction } from "@/types/transaction";
+
+// Services
+import request from "@/services/fetch";
 
 const Transactions = () => {
   const isLoading = useAuth();
@@ -38,24 +51,47 @@ const Transactions = () => {
 
   return (
     <Frame displayNavBar={true} displayFooter={false}>
-      <List title="Extrato de transações">
+      <List title="Extrato">
         {transactions.length ? (
           transactions.map((transaction) => (
             <ExpandableCard
-              resumedContent={`#${transaction.id} - ${transaction.detail}: ${transaction.type}`}
+              color={
+                transaction.type === "ADD"
+                  ? "green"
+                  : transaction.type === "DEB"
+                  ? "red"
+                  : ""
+              }
+              resumedContent={`#${transaction.id} - ${transaction.detail}`}
               expandedContent={
-                <div className="flex flex-row">
+                <div className="flex flex-row gap-4">
                   {transaction.order && (
                     <img
                       src={transaction.order.product.image}
                       alt={transaction.order.product.name}
-                      className="w-16 h-16"
+                      className="w-24 h-24 select-none"
                     />
                   )}
                   <div>
-                    <p>Valor: R$ {parseFloat(transaction.value).toFixed(2)}</p>
-                    <p>Tipo: {transaction.type}</p>
-                    <p>Detalhe: {transaction.detail}</p>
+                    <ul>
+                      <li>
+                        Tipo:{" "}
+                        {transaction.type === "DEB" ? "Débito" : "Crédito"}
+                      </li>
+                      <li>Valor: {parseFloat(transaction.value)}</li>
+                      {transaction.order?.id && (
+                        <li>Pedido: #{transaction.order?.id}</li>
+                      )}
+                      <li>
+                        Data:{" "}
+                        {format(
+                          new Date(transaction.created_at),
+                          "dd/MM/yyyy - HH:mm:ss",
+                          { locale: ptBR }
+                        )}
+                      </li>
+                      <li>Detalhe: {transaction.detail}</li>
+                    </ul>
                   </div>
                 </div>
               }

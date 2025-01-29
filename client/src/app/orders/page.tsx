@@ -1,12 +1,21 @@
 "use client";
 
+// React
 import { useEffect, useState } from "react";
+
+// Components
 import ExpandableCard from "@/components/ExpandableCard";
+import { Loader } from "@/components/Loader";
 import { Frame } from "@/components/Frame";
 import { List } from "@/components/List";
-import { Loader } from "@/components/Loader";
+
+// Hooks
 import useAuth from "@/hooks/useAuth";
+
+// Services
 import request from "@/services/fetch";
+
+// Types
 import { Order } from "@/types/order";
 
 const Orders = () => {
@@ -42,14 +51,29 @@ const Orders = () => {
         {orders.length ? (
           orders.map((order) => (
             <ExpandableCard
+              color={
+                order.status === "FIN"
+                  ? "green"
+                  : order.status === "CAN"
+                  ? "red"
+                  : ""
+              }
               resumedContent={`#${order.id} - ${order.product.name}: ${order.status}`}
               expandedContent={
                 <div className="flex flex-row">
                   <img
                     src={order.product.image}
                     alt={order.product.image}
-                    className="w-16 h-16"
+                    className="w-24 h-24"
                   />
+                  <div className="flex">
+                    <ul className="flex flex-col">
+                      <li>Produto: {order.product.name}</li>
+                      <li>b</li>
+                      <li>c</li>
+                      <li>d</li>
+                    </ul>
+                  </div>
                 </div>
               }
               key={order.id}
