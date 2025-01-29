@@ -8,4 +8,5 @@ export interface Transaction {
   value: string;
   type: string;
   detail: string;
+  created_at: string;
 }
