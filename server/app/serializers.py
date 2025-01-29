@@ -47,7 +47,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'product', 'product_id', 'user', 'status']
+        fields = ['id', 'product', 'product_id', 'user', 'status', 'created_at', 'updated_at']
 
     def create(self, validated_data):
         product_id = validated_data.pop('product_id')
@@ -55,10 +55,19 @@ class OrderSerializer(serializers.ModelSerializer):
         order = Order.objects.create(product=product, **validated_data)
         return order
 
+    def get_created_at(self, obj):
+        return obj.created_at.strftime('%d/%m/%Y - %H:%M:%S')
+
+    def get_updated_at(self, obj):
+        return obj.updated_at.strftime('%d/%m/%Y - %H:%M:%S')
+
 class TransactionSerializer(serializers.ModelSerializer):
     order = OrderSerializer(read_only=True)
     wallet = WalletSerializer(read_only=True)
 
     class Meta:
         model = Transaction
-        fields = ['id', 'order', 'wallet', 'value', 'type', 'detail']
+        fields = ['id', 'order', 'wallet', 'value', 'type', 'detail', 'created_at']
+
+    def get_created_at(self, obj):
+        return obj.created_at.strftime('%d/%m/%Y - %H:%M:%S')
