@@ -41,12 +41,19 @@ class ProductSerializer(serializers.ModelSerializer):
         return None
 
 class OrderSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField(write_only=True)
     product = ProductSerializer(read_only=True)
     user = CustomUserSerializer(read_only=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'product', 'user', 'status']
+        fields = ['id', 'product', 'product_id', 'user', 'status']
+
+    def create(self, validated_data):
+        product_id = validated_data.pop('product_id')
+        product = Product.objects.get(id=product_id)
+        order = Order.objects.create(product=product, **validated_data)
+        return order
 
 class TransactionSerializer(serializers.ModelSerializer):
     order = OrderSerializer(read_only=True)
