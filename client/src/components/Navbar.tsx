@@ -1,8 +1,15 @@
+// Next
+import Link from "next/link";
+
+// React
 import { useEffect, useState } from "react";
+
+// Interfaces
 import { NavbarProps } from "@/interfaces/NavbarProps";
+
+// Services
 import useLogout from "@/services/logout";
 import request from "@/services/fetch";
-import Link from "next/link";
 
 export const Navbar = (props: NavbarProps) => {
   const [balance, setBalance] = useState<string | null>(null);
@@ -28,11 +35,11 @@ export const Navbar = (props: NavbarProps) => {
   }, []);
 
   return (
-    <nav className="flex py-2 w-full items-center justify-between select-none shadow-md">
+    <nav className="flex p-2 w-full items-center justify-between select-none shadow-md">
       <div className="flex items-center gap-2">
-        <img src="/logo.svg" className="pl-2 w-12 h-12" />
+        {/* <img src="/logo.svg" className="pl-2 w-12 h-12" /> */}
         <svg
-          className="w-6 h-6 text-gray-800 dark:text-white"
+          className="w-6 h-6 text-neutral-800 dark:text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -43,7 +50,7 @@ export const Navbar = (props: NavbarProps) => {
           <path d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
         </svg>
         {balance !== null ? (
-          <span>Saldo: {parseFloat(balance)}</span>
+          <span>{parseFloat(balance)}</span>
         ) : (
           <span>Carregando...</span>
         )}
@@ -53,30 +60,30 @@ export const Navbar = (props: NavbarProps) => {
           <li key={index} className="flex items-center">
             <Link href={item.path} className="flex items-center gap-2">
               {item.icon && <span>{item.icon}</span>}
-              {item.title}
             </Link>
           </li>
         ))}
       </ul>
-      <div className="flex items-center pr-4">
-        <button onClick={logout}>
-          <svg
-            className="w-6 h-6 text-gray-800 dark:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeWidth="2"
-              d="M12 6h.01M12 12h.01M12 18h.01"
-            />
-          </svg>
-        </button>
+      <div className="flex items-center gap-2 cursor-pointer" onClick={logout}>
+        <p>Sair</p>
+
+        <svg
+          className="w-6 h-6 text-neutral-800 dark:text-white"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M16 12H4m12 0-4 4m4-4-4-4m3-4h2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-2"
+          />
+        </svg>
       </div>
     </nav>
   );

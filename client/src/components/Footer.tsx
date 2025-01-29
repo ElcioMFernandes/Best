@@ -1,3 +1,4 @@
+// Interfaces
 import { FooterProps } from "@/interfaces/FooterProps";
 
 export const Footer = (props: FooterProps) => {

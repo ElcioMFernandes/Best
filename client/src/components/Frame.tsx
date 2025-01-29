@@ -1,7 +1,12 @@
+// Interfaces
 import { FrameProps } from "@/interfaces/FrameProps";
+
+// Components
 import { Footer } from "./Footer";
 import { Navbar } from "./Navbar";
 import { Loader } from "./Loader";
+
+// Hooks
 import useAuth from "@/hooks/useAuth";
 
 export const Frame = (props: FrameProps) => {

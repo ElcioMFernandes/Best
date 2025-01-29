@@ -1,3 +1,4 @@
+// Interfaces
 import { SvgProps } from "@/interfaces/SvgProps";
 
 export const Svg = (props: SvgProps) => {

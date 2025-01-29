@@ -1,3 +1,4 @@
+// Interfaces
 import { ListProps } from "@/interfaces/ListProps";
 
 export const List = (props: ListProps) => {

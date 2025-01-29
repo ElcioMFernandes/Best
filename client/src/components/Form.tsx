@@ -1,4 +1,7 @@
+// React
 import { useState } from "react";
+
+// Interfaces
 import { FormProps } from "@/interfaces/FormProps";
 
 export const Form = (props: FormProps) => {
