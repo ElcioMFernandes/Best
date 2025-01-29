@@ -1,25 +1,31 @@
 import { ExpandableCardProps } from "@/interfaces/ExpandableCardProps";
 import { useState } from "react";
 
-const ExpandableCard = ({
-  resumedContent,
-  expandedContent,
-}: ExpandableCardProps) => {
+const ExpandableCard = (props: ExpandableCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
+  const colorClass =
+    props.color === "red"
+      ? "text-red-500"
+      : props.color === "green"
+      ? "text-green-500"
+      : "";
+
   return (
     <div
       className="p-4 w-full rounded-md
       bg-transparent shadow-md
-    dark:bg-stone-700 dark:shadow-2xl"
+    dark:bg-neutral-800 dark:shadow-2xl border border-neutral-700"
     >
-      <div className="flex items-center justify-between select-none">
+      <div
+        className={`flex items-center justify-between ${colorClass} select-none`}
+      >
         <div className="flex flex-grow justify-around" onClick={toggleExpand}>
-          {resumedContent}
+          {props.resumedContent}
         </div>
         <svg
           onClick={toggleExpand}
@@ -44,7 +50,7 @@ const ExpandableCard = ({
       </div>
       {isExpanded && (
         <div className="mt-4 border-t border-stone-600 pt-4">
-          {expandedContent}
+          {props.expandedContent}
         </div>
       )}
     </div>
