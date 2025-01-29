@@ -6,4 +6,6 @@ export interface Order {
   product: Product;
   user: User;
   status: string;
+  created_at: string;
+  updated_at: string;
 }
