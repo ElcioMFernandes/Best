@@ -171,7 +171,7 @@ def handle_order_status(sender, instance, created, **kwargs):
             wallet=wallet,
             value=product.price,
             type='DEB',
-            detail=f'Pedido criado: {product.name}'
+            detail=f'Pedido criado - {product.name}'
         )
         # Atualiza o saldo empenhado e o estoque reservado
         wallet.reserved_balance += product.price
