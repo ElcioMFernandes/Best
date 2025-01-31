@@ -1,10 +1,9 @@
 interface NavbarItem {
-  title: string;
-  path: string;
+  title?: string;
   icon?: React.ReactNode;
+  path: string;
 }
 
 export interface NavbarProps {
-  title: string;
   items: NavbarItem[];
 }
