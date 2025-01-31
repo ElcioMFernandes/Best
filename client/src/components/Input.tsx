@@ -16,8 +16,10 @@ export const Input = (props: InputProps) => {
           name={props.name}
           value={props.value}
           placeholder={props.placeholder}
+          required={props.required}
+          maxLength={props.maxLength}
           onChange={props.onChange}
-          className="focus:outline-none bg-slate-100 border dark:bg-stone-700 dark:border-stone-500 py-2 px-3 rounded-md"
+          className="focus:outline-none border bg-neutral-200 border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 py-2 px-3 rounded-md"
         />
       </div>
     </>
