@@ -20,13 +20,18 @@ const request = async (props: RequestProps) => {
     return response.data;
   } catch (error: any) {
     if (error.response && error.response.status === 401 && !props.retry) {
-      console.error("Unauthorized request, attempting to refresh token...");
       try {
-        const newAccessToken = await refreshAccessToken();
-        return request({ ...props, retry: true });
-      } catch (refreshError) {
-        console.error("Error refreshing access token:", refreshError);
-        throw refreshError;
+        const success = await refreshAccessToken();
+        if (success) {
+          return request({ ...props, retry: true });
+        } else {
+          sessionStorage.removeItem("accessToken");
+          sessionStorage.removeItem("refreshToken");
+          window.location.href = "/";
+        }
+      } catch (error) {
+        console.error("Error refreshing access token:", error);
+        throw error;
       }
     } else {
       console.error("Error fetching data:", error);
