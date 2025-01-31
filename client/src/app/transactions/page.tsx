@@ -2,7 +2,6 @@
 
 // Date-fns
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 // React
 import { useEffect, useState } from "react";
@@ -50,59 +49,42 @@ const Transactions = () => {
   }
 
   return (
-    <Frame displayNavBar={true} displayFooter={false}>
-      <List title="Extrato">
-        {transactions.length ? (
-          transactions.map((transaction) => (
+    <Frame>
+      <div className="w-full">
+        <List title="Extrato">
+          {transactions.map((transaction, index) => (
             <ExpandableCard
-              color={
-                transaction.type === "ADD"
-                  ? "green"
-                  : transaction.type === "DEB"
-                  ? "red"
-                  : ""
+              key={index}
+              color={transaction.type === "DEB" ? "red" : "green"}
+              resumedContent={
+                <div>{`#${transaction.id} - ${transaction.detail}: ${
+                  transaction.type === "DEB" ? "Débito" : "Crédito"
+                }`}</div>
               }
-              resumedContent={`#${transaction.id} - ${transaction.detail}`}
               expandedContent={
-                <div className="flex flex-row gap-4">
-                  {transaction.order && (
-                    <img
-                      src={transaction.order.product.image}
-                      alt={transaction.order.product.name}
-                      className="w-24 h-24 select-none"
-                    />
-                  )}
-                  <div>
-                    <ul>
-                      <li>
-                        Tipo:{" "}
-                        {transaction.type === "DEB" ? "Débito" : "Crédito"}
-                      </li>
-                      <li>Valor: {parseFloat(transaction.value)}</li>
-                      {transaction.order?.id && (
-                        <li>Pedido: #{transaction.order?.id}</li>
+                <div className="grid grid-cols-1 gap-4 items-center">
+                  <div className="grid justify-center col-span-1"></div>
+                  <div className="col-span-1 flex flex-col gap-4 items-left">
+                    <p>
+                      Data da transação:{" "}
+                      {format(
+                        new Date(transaction.created_at),
+                        "dd/MM/yyyy - HH:mm:ss"
                       )}
-                      <li>
-                        Data:{" "}
-                        {format(
-                          new Date(transaction.created_at),
-                          "dd/MM/yyyy - HH:mm:ss",
-                          { locale: ptBR }
-                        )}
-                      </li>
-                      <li>Detalhe: {transaction.detail}</li>
-                    </ul>
+                    </p>
+                    <p>Motivo: {transaction.detail}</p>
+                    <p>Valor: {transaction.value}</p>
+
+                    {transaction.order && (
+                      <p>Pedido: #{transaction.order.id}</p>
+                    )}
                   </div>
                 </div>
               }
-              key={transaction.id}
-              {...transaction}
             />
-          ))
-        ) : (
-          <div>Não há registros</div>
-        )}
-      </List>
+          ))}
+        </List>
+      </div>
     </Frame>
   );
 };

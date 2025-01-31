@@ -1,5 +1,7 @@
 "use client";
 
+import { format } from "date-fns";
+
 // React
 import { useEffect, useState } from "react";
 
@@ -45,45 +47,84 @@ const Orders = () => {
     return <Loader />;
   }
 
+  const handleSubmit = async (id: number) => {
+    const response = await request({
+      endpoint: `orders/${id}/`,
+      method: "PATCH",
+      body: {
+        status: "CAN",
+      },
+    });
+    window.location.reload();
+  };
+
   return (
-    <Frame displayNavBar={true} displayFooter={false}>
-      <List title="Pedidos">
-        {orders.length ? (
-          orders.map((order) => (
+    <Frame>
+      <div className="w-full">
+        <List title="Pedidos">
+          {orders.map((order, index) => (
             <ExpandableCard
+              key={index}
               color={
-                order.status === "FIN"
-                  ? "green"
-                  : order.status === "CAN"
+                order.status === "CAN"
                   ? "red"
+                  : order.status === "FIN"
+                  ? "green"
                   : ""
               }
-              resumedContent={`#${order.id} - ${order.product.name}: ${order.status}`}
+              resumedContent={
+                <div>{`#${order.id} - ${order.product.name}: ${
+                  order.status === "FIN"
+                    ? "Finalizado"
+                    : order.status === "CAN"
+                    ? "Cancelado"
+                    : "Pendente"
+                }`}</div>
+              }
               expandedContent={
-                <div className="flex flex-row">
-                  <img
-                    src={order.product.image}
-                    alt={order.product.image}
-                    className="w-24 h-24"
-                  />
-                  <div className="flex">
-                    <ul className="flex flex-col">
-                      <li>Produto: {order.product.name}</li>
-                      <li>b</li>
-                      <li>c</li>
-                      <li>d</li>
-                    </ul>
+                <div className="grid grid-cols-4 gap-4 items-center">
+                  <div className="grid justify-center col-span-2 lg:col-span-1">
+                    <img
+                      src={order.product.image}
+                      alt={order.product.name}
+                      className="h-24 w-24 md:h-24 md:w-24 lg:h-24 lg:w-24"
+                    />
+                  </div>
+                  <div className="col-span-2 lg:col-span-3 flex flex-col gap-4 items-left">
+                    <p>
+                      Data de compra:{" "}
+                      {format(
+                        new Date(order.created_at),
+                        "dd/MM/yyyy - HH:mm:ss"
+                      )}
+                    </p>
+
+                    {order.updated_at && (
+                      <p>
+                        Última atualização:{" "}
+                        {format(
+                          new Date(order.updated_at),
+                          "dd/MM/yyyy - HH:mm:ss"
+                        )}
+                      </p>
+                    )}
+                    {order.status === "PEN" ? (
+                      <button
+                        onClick={() => handleSubmit(order.id)}
+                        className="w-full lg:w-1/3 py-2 rounded bg-neutral-800 border-2 border-red-500 text-red-500 hover:ring-2 ring-red-600"
+                      >
+                        Cancelar compra
+                      </button>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </div>
               }
-              key={order.id}
-              {...order}
             />
-          ))
-        ) : (
-          <div>Não há registros</div>
-        )}
-      </List>
+          ))}
+        </List>
+      </div>
     </Frame>
   );
 };

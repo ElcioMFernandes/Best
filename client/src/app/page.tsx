@@ -4,7 +4,7 @@
 import { useRouter } from "next/navigation";
 
 // React
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Components
 import { Input } from "@/components/Input";
@@ -21,6 +21,8 @@ const Login = () => {
   const [estabelecimento, setEstabelecimento] = useState(estabelecimentos[0]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginFail, setLoginFail] = useState(false);
+  const [shakeClass, setShakeClass] = useState("");
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -33,19 +35,28 @@ const Login = () => {
     if (response) {
       router.push("/products");
     } else {
-      alert("Verifique suas credenciais");
+      setLoginFail(true);
+      setShakeClass("shake");
+      setTimeout(() => setShakeClass(""), 500); // Remove the shake class after the animation duration
       console.log(JSON.stringify(formData));
     }
   };
 
   return (
     <>
-      <div className="w-screen h-screen flex flex-col items-center justify-center">
+      <div
+        className="w-screen h-screen flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('wallpaper.jpg')" }}
+      >
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-4 shadow-lg p-4 rounded-md border border-neutral-700"
+          className="flex w-3/9 flex-col gap-4 shadow-lg p-4 rounded-md border bg-neutral-200 border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800"
         >
-          <p>Login</p>
+          <p className={`${loginFail ? "text-red-500 " + shakeClass : ""}`}>
+            {loginFail
+              ? "Verifique suas credenciais"
+              : "Entre com suas credenciais"}
+          </p>
           <Dropdown
             id="estabelecimento"
             label="Estabelecimento"
@@ -55,25 +66,34 @@ const Login = () => {
           />
           <Input
             id="username"
-            type="text"
+            type="num"
             name="username"
             label="Matrícula"
             value={username}
+            maxLength={5}
+            required={true}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setUsername(e.target.value)
             }
           />
+          <p>
+            Sua matrícula: {estabelecimento}-{username.padStart(5, "0")}
+          </p>
           <Input
             id="password"
             type="password"
             name="password"
             label="Senha"
             value={password}
+            required={true}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword(e.target.value)
             }
           />
-          <button type="submit" className="bg-red-500 py-2 rounded-md">
+          <button
+            type="submit"
+            className="text-neutral-200  bg-red-500 py-2 rounded-md"
+          >
             Entrar
           </button>{" "}
         </form>

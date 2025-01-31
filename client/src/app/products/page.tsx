@@ -2,19 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
-// hooks
 import useAuth from "@/hooks/useAuth";
-
-// components
 import { Frame } from "@/components/Frame";
 import Card from "@/components/Card";
-
-// types
 import { Product } from "@/types/product";
 import { Loader } from "@/components/Loader";
-
-// services
 import request from "@/services/fetch";
 
 const Products = () => {
@@ -51,8 +43,8 @@ const Products = () => {
   }
 
   return (
-    <Frame displayNavBar={true} displayFooter={false}>
-      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-10">
+    <Frame>
+      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
         {products
           .filter((product) => product.stock > 0)
           .map((product, index) => (
