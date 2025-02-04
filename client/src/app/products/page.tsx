@@ -24,6 +24,7 @@ const Products = () => {
         const filteredProducts = response.map((product: any) => ({
           id: product.id,
           name: product.name,
+          desc: product.description,
           price: product.price,
           stock: product.stock,
           image: product.image,

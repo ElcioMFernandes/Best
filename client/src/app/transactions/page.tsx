@@ -57,7 +57,10 @@ const Transactions = () => {
               key={index}
               color={transaction.type === "DEB" ? "red" : "green"}
               resumedContent={
-                <div>{`#${transaction.id} - ${transaction.detail}: ${
+                <div>{`#${transaction.id} - ${format(
+                  new Date(transaction.created_at),
+                  "dd/MM/yyyy - HH:mm:ss"
+                )} - ${
                   transaction.type === "DEB" ? "Débito" : "Crédito"
                 }`}</div>
               }
