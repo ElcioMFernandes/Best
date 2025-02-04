@@ -36,9 +36,9 @@ export const Navbar = (props: NavbarProps) => {
 
   return (
     <nav className="flex justify-between bg-neutral-200 dark:bg-neutral-800 shadow-lg border-b dark:border-b-neutral-700 px-2 py-4 select-none">
-      <Link href={"/transactions"} className="flex gap-1">
+      <Link href={"/transactions"} className="flex gap-1 items-center">
         <svg
-          className="w-6 h-6 text-gray-800 dark:text-white"
+          className="w-8 h-8 text-gray-800 dark:text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -49,14 +49,13 @@ export const Navbar = (props: NavbarProps) => {
           <path
             stroke="currentColor"
             strokeLinecap="round"
-            strokeLinejoin="round"
             strokeWidth="2"
-            d="M5 18h14M5 18v3h14v-3M5 18l1-9h12l1 9M16 6v3m-4-3v3m-2-6h8v3h-8V3Zm-1 9h.01v.01H9V12Zm3 0h.01v.01H12V12Zm3 0h.01v.01H15V12Zm-6 3h.01v.01H9V15Zm3 0h.01v.01H12V15Zm3 0h.01v.01H15V15Z"
+            d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"
           />
         </svg>
 
         {balance !== null ? (
-          <span>{parseFloat(balance)}</span>
+          <span className="text-2xl">{parseFloat(balance)}</span>
         ) : (
           <span>...</span>
         )}
@@ -65,7 +64,7 @@ export const Navbar = (props: NavbarProps) => {
       <ul className="flex gap-4">
         {props.items.map((item, index) => (
           <li key={index} className="">
-            <Link href={item.path} className="flex">
+            <Link href={item.path} className="flex items-center text-xl">
               {item.icon}
               {item.title}
             </Link>
