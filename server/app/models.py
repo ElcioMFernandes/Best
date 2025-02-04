@@ -66,6 +66,7 @@ class Wallet(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=20, verbose_name="Nome", help_text="Nome do produto")
+    description = models.CharField(max_length=150, verbose_name="Descrição", null=True, blank=True, help_text="Descição do produto")
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name="Preço", help_text="Preço do produto")
     stock = models.IntegerField(verbose_name="Estoque", help_text="Quantidade em estoque")
     reserved_stock = models.IntegerField(default=0, verbose_name="Estoque reservado", help_text="Quantidade empenhada em pedidos")
@@ -104,9 +105,12 @@ class Order(models.Model):
     status = models.CharField(max_length=3, choices=STATUS_CHOICES, default='PEN', verbose_name="Status", help_text="Status do pedido")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em", help_text="Data de criação do pedido")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Atualizado em", help_text="Data de atualização do pedido")
-
+    
     def __str__(self):
-        return f"#{self.id}({self.status}): {self.product.name} - {self.user.username}"
+        return f"Order {self.id} - {self.product.name} - {self.user.username}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Pedido'
@@ -171,7 +175,7 @@ def handle_order_status(sender, instance, created, **kwargs):
             wallet=wallet,
             value=product.price,
             type='DEB',
-            detail=f'Pedido criado - {product.name}'
+            detail=f'Pedido de {product.name}'
         )
         # Atualiza o saldo empenhado e o estoque reservado
         wallet.reserved_balance += product.price
@@ -179,6 +183,7 @@ def handle_order_status(sender, instance, created, **kwargs):
         product.stock -= 1
         wallet.save()
         product.save()
+
     elif instance.status == 'CAN':
         # Cria uma transação de adição e atualiza os saldos
         Transaction.objects.create(
@@ -193,6 +198,7 @@ def handle_order_status(sender, instance, created, **kwargs):
         product.stock += 1
         wallet.save()
         product.save()
+
     elif not created and instance.status == 'FIN':
         # Atualiza o saldo empenhado e o estoque reservado
         wallet.reserved_balance -= product.price
