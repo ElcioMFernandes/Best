@@ -71,10 +71,10 @@ export const Navbar = (props: NavbarProps) => {
           </li>
         ))}
       </ul>
-      <div className="flex justify-end gap-1 cursor-pointer" onClick={logout}>
-        <p>Sair</p>
+      <div className="flex justify-end gap-1 cursor-pointer">
         <svg
-          className="w-6 h-6 text-neutral-800 dark:text-white"
+          onClick={logout}
+          className="w-8 h-8 text-neutral-800 dark:text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
