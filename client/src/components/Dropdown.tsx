@@ -1,15 +1,10 @@
-// React
 import { useEffect, useState } from "react";
-
-// Hooks
 import { useToggle } from "@/hooks/useToggle";
-
-// Interfaces
 import { DropdownProps } from "@/interfaces/DropdownProps";
 
 export const Dropdown = (props: DropdownProps) => {
   const [enabled, toggleDropdown] = useToggle(false);
-  const [selectedValue, setSelectedValue] = useState(props.options[0]);
+  const [selectedValue, setSelectedValue] = useState(props.value);
 
   useEffect(() => {
     setSelectedValue(props.value);
@@ -18,9 +13,7 @@ export const Dropdown = (props: DropdownProps) => {
   const handleSelect = (value: string) => {
     setSelectedValue(value);
     toggleDropdown();
-    {
-      props.onChange && props.onChange(value);
-    }
+    props.onChange && props.onChange(value);
   };
 
   return (
@@ -32,7 +25,7 @@ export const Dropdown = (props: DropdownProps) => {
           onClick={toggleDropdown}
           className="cursor-pointer focus:outline-none border bg-neutral-200 border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 py-2 px-3 rounded-md flex items-center justify-between"
         >
-          {selectedValue}
+          {props.options[selectedValue]}
           <svg
             className={`w-6 h-6 bg-neutral-200 border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 cursor-pointer transform transition-transform ${
               enabled ? "rotate-180" : ""
@@ -55,13 +48,13 @@ export const Dropdown = (props: DropdownProps) => {
         </section>
         {enabled && (
           <ul className="absolute mt-2 w-full right-0 border bg-neutral-200 border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 rounded-md shadow-lg z-10">
-            {props.options.map((option) => (
+            {Object.entries(props.options).map(([value, label]) => (
               <li
-                key={option}
-                className=" py-2 pl-2 hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer"
-                onClick={() => handleSelect(option)}
+                key={value}
+                className="py-2 pl-2 hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer"
+                onClick={() => handleSelect(value)}
               >
-                {option}
+                {label}
               </li>
             ))}
           </ul>
