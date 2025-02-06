@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
-import { Frame } from "@/components/Frame";
 import Card from "@/components/Card";
 import { Product } from "@/types/product";
 import { Loader } from "@/components/Loader";
 import request from "@/services/fetch";
+import { Navbar } from "@/components/Navbar";
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -44,23 +44,22 @@ const Products = () => {
   }
 
   return (
-    <Frame>
-      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+    <div className="h-full flex flex-col items-center gap-10">
+      <Navbar />
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 w-5/6 gap-4 mb-10">
         {products
           .filter((product) => product.stock > 0)
           .map((product, index) => (
-            <li key={index}>
-              <Link href={`/products/${product.id}`}>
-                <Card
-                  title={product.name}
-                  subtitle={product.price}
-                  image={product.image}
-                />
-              </Link>
-            </li>
+            <Link href={`/products/${product.id}`} key={product.id}>
+              <Card
+                title={product.name}
+                subtitle={product.price}
+                image={product.image}
+              />
+            </Link>
           ))}
-      </ul>
-    </Frame>
+      </div>
+    </div>
   );
 };
 
