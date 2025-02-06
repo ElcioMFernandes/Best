@@ -103,6 +103,7 @@ class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Produto", help_text="Produto do pedido")
     user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, verbose_name="Usuário", help_text="Usuário que fez o pedido")
     status = models.CharField(max_length=3, choices=STATUS_CHOICES, default='PEN', verbose_name="Status", help_text="Status do pedido")
+    price_at_order = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em", help_text="Data de criação do pedido")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Atualizado em", help_text="Data de atualização do pedido")
     
@@ -169,6 +170,10 @@ def handle_order_status(sender, instance, created, **kwargs):
         # Verifica se há saldo suficiente antes de criar o pedido
         if wallet.balance < product.price:
             raise ValueError("Saldo insuficiente para criar o pedido.")
+        
+        instance.price_at_order = product.price
+        instance.save()
+
         # Cria uma transação de débito para o pedido
         Transaction.objects.create(
             order=instance,
@@ -178,7 +183,7 @@ def handle_order_status(sender, instance, created, **kwargs):
             detail=f'Pedido de {product.name}'
         )
         # Atualiza o saldo empenhado e o estoque reservado
-        wallet.reserved_balance += product.price
+        wallet.reserved_balance += instance.price_at_order
         product.reserved_stock += 1
         product.stock -= 1
         wallet.save()
@@ -189,11 +194,11 @@ def handle_order_status(sender, instance, created, **kwargs):
         Transaction.objects.create(
             order=instance,
             wallet=wallet,
-            value=product.price,
+            value=instance.price_at_order,  # Usar o preço original do pedido
             type='ADD',
             detail=f'Cancelamento de pedido: {product.name}'
         )
-        wallet.reserved_balance -= product.price
+        wallet.reserved_balance -= instance.price_at_order
         product.reserved_stock -= 1
         product.stock += 1
         wallet.save()
@@ -201,7 +206,7 @@ def handle_order_status(sender, instance, created, **kwargs):
 
     elif not created and instance.status == 'FIN':
         # Atualiza o saldo empenhado e o estoque reservado
-        wallet.reserved_balance -= product.price
+        wallet.reserved_balance -= instance.price_at_order
         product.reserved_stock -= 1
         wallet.save()
         product.save()
