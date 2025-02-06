@@ -6,6 +6,7 @@ export interface Order {
   product: Product;
   user: User;
   status: string;
+  price_at_order: string;
   created_at: string;
   updated_at: string;
 }
