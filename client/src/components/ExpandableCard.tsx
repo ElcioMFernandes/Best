@@ -18,8 +18,8 @@ const ExpandableCard = (props: ExpandableCardProps) => {
   return (
     <div
       className="p-4 w-full rounded-md
-      bg-transparent shadow-md
-    dark:bg-neutral-800 dark:shadow-2xl border border-neutral-700"
+      bg-transparent shadow
+    dark:bg-neutral-800 dark:shadow-2xl dark:border dark:border-neutral-700 shadow-neutral-500/50"
     >
       <div
         className={`flex items-center justify-between ${colorClass} select-none`}
@@ -49,7 +49,7 @@ const ExpandableCard = (props: ExpandableCardProps) => {
         </svg>
       </div>
       {isExpanded && (
-        <div className="mt-4 border-t border-stone-600 pt-4">
+        <div className="mt-4 border-t border-stone-600 border-opacity-30 pt-4">
           {props.expandedContent}
         </div>
       )}
