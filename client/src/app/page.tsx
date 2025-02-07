@@ -1,101 +1,89 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Input } from "@/components/Input";
-import { Dropdown } from "@/components/Dropdown";
 import { fetchAuth } from "@/services/auth";
+import request from "@/services/fetch";
+import { User } from "@/types/user";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Login = () => {
-  const router = useRouter();
-
-  const estabelecimentos = {
-    "101": "Tubos",
-    "103": "TEC",
-    "114": "TIC",
-  };
-
-  const [estabelecimento, setEstabelecimento] = useState(
-    Object.keys(estabelecimentos)[0]
-  );
   const [username, setUsername] = useState("");
+  const [estabelecimento, setEstabelecimento] = useState("");
+  const [register, setRegister] = useState("");
   const [password, setPassword] = useState("");
-  const [loginFail, setLoginFail] = useState(false);
-  const [shakeClass, setShakeClass] = useState("");
+  const [status, setStatus] = useState("Entre com sua matrícula e senha");
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const paddedUsername = username.padStart(5, "0");
-    const formData = {
-      username: `${estabelecimento}-${paddedUsername}`,
-      password,
-    };
-    const response = await fetchAuth(formData);
+
+    const response = await fetchAuth({
+      username: register,
+      password: password,
+    });
+
     if (response) {
-      router.push("/products");
+      const user: User = await request({ endpoint: "user", method: "GET" });
+      console.log(user);
     } else {
-      setLoginFail(true);
-      setShakeClass("shake");
-      setTimeout(() => setShakeClass(""), 500);
-      console.log(JSON.stringify(formData));
+      setStatus("Verifique suas credenciais.");
     }
   };
 
+  useEffect(() => {
+    setUsername(`${estabelecimento}-${register}`);
+  }, [register, estabelecimento]);
+
   return (
-    <div
-      className="w-screen h-screen flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('wallpaper.jpg')" }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="flex w-3/9 flex-col gap-4 shadow-lg p-4 rounded-md border bg-neutral-200 border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800"
-      >
-        <p className={`${loginFail ? "text-red-500 " + shakeClass : ""}`}>
-          {loginFail
-            ? "Verifique suas credenciais"
-            : "Entre com suas credenciais"}
-        </p>
-        <Dropdown
-          id="estabelecimento"
-          label="Estabelecimento"
-          options={estabelecimentos}
-          value={estabelecimento}
-          onChange={setEstabelecimento}
-        />
-        <Input
-          id="username"
-          type="num"
-          name="username"
-          label="Matrícula"
-          value={username}
-          maxLength={5}
-          required={true}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setUsername(e.target.value)
-          }
-        />
-        <p>
-          Sua matrícula: {estabelecimento}-{username.padStart(5, "0")}
-        </p>
-        <Input
-          id="password"
-          type="password"
-          name="password"
-          label="Senha"
-          value={password}
-          required={true}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPassword(e.target.value)
-          }
-        />
-        <button
-          type="submit"
-          className="text-neutral-200 bg-red-500 py-2 rounded-md"
+    <>
+      <div className="flex flex-col justify-center items-center h-screen border">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col justify-center items-center p-4 border gap-2"
         >
-          Entrar
-        </button>
-      </form>
-    </div>
+          <p>{status}</p>
+          <div className="flex flex-col">
+            <label htmlFor="register">Estabelecimento</label>
+            <input
+              id="estabelecimento"
+              type="text"
+              required
+              value={estabelecimento}
+              onChange={(e: any) => setEstabelecimento(e.target.value)}
+              className="bg-transparent border"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="register">Matrícula</label>
+            <input
+              id="register"
+              type="text"
+              required
+              value={register}
+              onChange={(e: any) => setRegister(e.target.value)}
+              className="bg-transparent border"
+            />
+          </div>
+          <p>Matrícula completa: {username}</p>
+          <div className="flex flex-col">
+            <label htmlFor="senha">Senha</label>
+            <input
+              id="senha"
+              type="password"
+              required
+              value={password}
+              onChange={(e: any) => setPassword(e.target.value)}
+              className="bg-transparent border"
+            />
+          </div>
+          <button
+            type="submit"
+            className="py-2 bg-blue-500 shadow-lg px-10 shadow-blue-500/50 rounded hover:bg-blue-600"
+          >
+            Entrar
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
 
