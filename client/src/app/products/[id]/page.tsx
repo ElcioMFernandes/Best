@@ -111,18 +111,18 @@ const ProductPage = () => {
             <p className="text-sm">Em estoque: {product.stock}</p>
             <p className="text-lg">{product.description}</p>
             {Number(wallet.balance) < Number(product.price) ? (
-              <button className="bg-red-500 rounded shadow-lg shadow-red-700/50 hover:bg-red-600 py-2 cursor-not-allowed lg:py-0 lg:text-lg">
+              <button className="bg-red-500 rounded shadow-lg shadow-red-700/50 hover:bg-red-600 py-2 cursor-not-allowed lg:py-0 lg:text-lg text-white">
                 Você não possui saldo suficiente
               </button>
             ) : Number(product.stock) > 0 ? (
               <button
                 onClick={handleSubmit}
-                className="bg-green-500 rounded shadow-lg shadow-green-700/50 hover:bg-green-600 py-2 cursor-pointer lg:py-0 lg:text-lg"
+                className="bg-green-500 rounded shadow-lg shadow-green-700/50 hover:bg-green-600 py-2 cursor-pointer lg:py-0 lg:text-lg text-white"
               >
                 Comprar
               </button>
             ) : (
-              <button className="bg-yellow-500 rounded shadow-lg shadow-yellow-700/50 hover:bg-yellow-600 py-2 cursor-not-allowed lg:py-0 lg:text-lg">
+              <button className="bg-yellow-500 rounded shadow-lg shadow-yellow-700/50 hover:bg-yellow-600 py-2 cursor-not-allowed lg:py-0 lg:text-lg text-white">
                 Item sem estoque
               </button>
             )}
