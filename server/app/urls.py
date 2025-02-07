@@ -9,11 +9,12 @@ from .views import (
     OrderListCreateAPIView,
     OrderRetrieveUpdateDestroyAPIView,
     TransactionListCreateAPIView,
-    TransactionRetrieveUpdateDestroyAPIView
+    TransactionRetrieveUpdateDestroyAPIView,
+    CustomUserRetrieveUpdateAPIView
 )
 
 urlpatterns = [
-    path('users/', CustomUserListCreateAPIView.as_view(), name='user-list-create'),
+    path('users/', CustomUserRetrieveUpdateAPIView.as_view(), name='user-detail'),
     path('users/<int:pk>/', CustomUserRetrieveUpdateDestroyAPIView.as_view(), name='user-detail'),
     path('wallets/', WalletListCreateAPIView.as_view(), name='wallet-list-create'),
     path('wallets/<int:pk>/', WalletRetrieveUpdateDestroyAPIView.as_view(), name='wallet-detail'),
