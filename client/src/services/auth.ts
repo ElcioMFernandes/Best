@@ -11,6 +11,7 @@ export const fetchAuth = async (data: any) => {
     const { access, refresh } = response.data;
     sessionStorage.setItem("accessToken", access);
     sessionStorage.setItem("refreshToken", refresh);
+
     return true;
   } catch (error) {
     return false;
