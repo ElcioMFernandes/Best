@@ -4,7 +4,7 @@ from .models import CustomUser, Wallet, Product, Order, Transaction, RequestLog
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
+        (None, {'fields': ('username', 'password', 'password_changed')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
@@ -14,11 +14,12 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('username', 'first_name', 'last_name', 'password1', 'password2'),
         }),
     )
-    list_display = ('username', 'first_name', 'last_name', 'is_staff')
+    list_display = ('username', 'first_name', 'last_name', 'is_staff', 'password_changed')
     search_fields = ('username', 'first_name', 'last_name')
     ordering = ('username',)
     filter_horizontal = ()
     list_filter = ('is_staff', 'is_superuser', 'is_active')
+    readonly_fields = ('password_changed',)
 
 admin.site.register(CustomUser, CustomUserAdmin)
 

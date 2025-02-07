@@ -16,6 +16,14 @@ class CustomUserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIVi
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
 
+class CustomUserRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = CustomUserSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
 class WalletListCreateAPIView(generics.ListCreateAPIView):
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer

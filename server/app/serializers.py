@@ -5,7 +5,7 @@ from .models import CustomUser, Wallet, Product, Order, Transaction
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'first_name', 'last_name', 'password']
+        fields = ['id', 'username', 'first_name', 'last_name', 'password', 'password_changed']
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate_password(self, value):
