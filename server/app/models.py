@@ -31,10 +31,16 @@ class CustomUser(AbstractUser):
     groups = None
     user_permissions = None
 
+    password_changed = models.BooleanField(default=False, verbose_name="Senha alterada", help_text="Indica se a senha foi alterada")
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     objects = CustomUserManager()
+
+    def set_password(self, raw_password):
+        super().set_password(raw_password)
+        self.password_changed = True
 
     def __str__(self):
         return f"{self.username} - {self.first_name} {self.last_name}"
