@@ -31,7 +31,7 @@ export const List = (props: ListProps) => {
   return (
     <div className="flex flex-col">
       {title && (
-        <h1 className="text-center text-2xl border-b pb-4 border-b-neutral-700">
+        <h1 className="text-center text-2xl border-b pb-4 border-b-neutral-700 border-opacity-30">
           {title}
         </h1>
       )}
