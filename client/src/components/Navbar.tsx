@@ -69,7 +69,7 @@ export const Navbar = () => {
           </Link>
         </li>
       </ul>
-      <div className="flex justify-end gap-1 cursor-pointer">
+      <div onClick={logout} className="flex justify-end gap-1 cursor-pointer">
         <SvgExit />
       </div>
     </nav>
