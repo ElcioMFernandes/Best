@@ -14,8 +14,9 @@ from .views import (
 )
 
 urlpatterns = [
-    path('users/', CustomUserRetrieveUpdateAPIView.as_view(), name='user-detail'),
+    path('users/', CustomUserListCreateAPIView.as_view(), name='user-list-create'),
     path('users/<int:pk>/', CustomUserRetrieveUpdateDestroyAPIView.as_view(), name='user-detail'),
+    path('users/me/', CustomUserRetrieveUpdateAPIView.as_view(), name='user-me'),
     path('wallets/', WalletListCreateAPIView.as_view(), name='wallet-list-create'),
     path('wallets/<int:pk>/', WalletRetrieveUpdateDestroyAPIView.as_view(), name='wallet-detail'),
     path('products/', ProductListCreateAPIView.as_view(), name='product-list-create'),
